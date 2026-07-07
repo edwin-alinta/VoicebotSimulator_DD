@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alinta Energy Direct Debit IVR Simulator</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Source+Serif+4:wght@500;600&display=swap");
+
+        :root {
+            --surface: #f9f9f9;
+            --surface-container-lowest: #ffffff;
+            --surface-container-low: #f3f3f3;
+            --surface-container: #eeeeee;
+            --surface-container-high: #e8e8e8;
+            --surface-container-highest: #e2e2e2;
+            --on-surface: #1a1c1c;
+            --on-surface-variant: #5b4137;
+            --inverse-surface: #2f3131;
+            --inverse-on-surface: #f0f1f1;
+            --outline: #8f7065;
+            --outline-variant: #e3bfb1;
+            --primary: #a53c00;
+            --primary-container: #ff6100;
+            --primary-fixed: #ffdbce;
+            --secondary: #50606e;
+            --secondary-container: #d1e2f3;
+            --tertiary: #0055d4;
+            --tertiary-container: #6490ff;
+            --error: #ba1a1a;
+            --error-container: #ffdad6;
+            --brand-orange: #ff6100;
+            --deep-navy: #2a3a47;
+            --action-blue: #196cff;
+            --surface-white: #ffffff;
+            --background-subtle: #fafafa;
+            --font-sans: "Hanken Grotesk", "Segoe UI", sans-serif;
+            --font-compact: "Archivo Narrow", "Arial Narrow", sans-serif;
+            --font-serif: "Source Serif 4", Georgia, serif;
+            --radius-sm: 2px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            --radius-xl: 12px;
+            --space-1: 8px;
+            --space-2: 16px;
+            --space-3: 24px;
+            --space-4: 32px;
+            --space-5: 40px;
+            --space-6: 48px;
+            --shadow-active: 0 4px 20px rgba(42, 58, 71, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            min-height: 100%;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--on-surface);
+            background:
+                linear-gradient(rgba(42, 58, 71, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(42, 58, 71, 0.05) 1px, transparent 1px),
+                linear-gradient(135deg, var(--surface-white) 0%, var(--background-subtle) 46%, var(--surface-container-low) 100%);
+            background-size: 48px 48px, 48px 48px, auto;
+            min-height: 100vh;
+            margin: 0;
+            padding: clamp(20px, 5vw, 64px);
+        }
+
+        button {
+            font: inherit;
+        }
+
+        .app-shell {
+            width: min(1120px, 100%);
+            min-height: calc(100vh - clamp(40px, 10vw, 128px));
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: minmax(280px, 0.86fr) minmax(360px, 440px);
+            gap: clamp(24px, 5vw, 64px);
+            align-items: center;
+            position: relative;
+            isolation: isolate;
+        }
+
+        .context-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+
+        .brand-row {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .brand-tab {
+            background: var(--brand-orange);
+            color: var(--surface-white);
+            border-radius: var(--radius-lg);
+            padding: 10px 14px;
+            font-family: var(--font-compact);
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .eyebrow,
+        .section-title,
+        .meta-label,
+        .phase-kicker {
+            font-family: var(--font-compact);
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0;
+        }
+
+        .eyebrow,
+        .meta-label,
+        .phase-kicker {
+            color: var(--on-surface-variant);
+        }
+
+        .context-title {
+            margin: 0;
+            color: var(--deep-navy);
+            font-size: clamp(40px, 6vw, 56px);
+            font-weight: 800;
+            line-height: 1.05;
+        }
+
+        .context-copy {
+            max-width: 54ch;
+            margin: 0;
+            color: var(--secondary);
+            font-size: 18px;
+            line-height: 28px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: var(--space-2);
+            max-width: 560px;
+        }
+
+        .meta-item {
+            padding: 0 0 0 var(--space-2);
+            border-left: 3px solid var(--outline-variant);
+        }
+
+        .meta-value {
+            display: block;
+            margin-top: 2px;
+            color: var(--deep-navy);
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 24px;
+        }
+
+        .phase-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        .phase-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: var(--space-1);
+            max-width: 520px;
+        }
+
+        .phase-item {
+            display: grid;
+            grid-template-columns: 36px 1fr;
+            gap: 12px;
+            align-items: center;
+            padding: 10px 12px;
+            border: 1px solid transparent;
+            border-radius: var(--radius-lg);
+            color: var(--secondary);
+        }
+
+        .phase-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 999px;
+            display: grid;
+            place-items: center;
+            background: var(--surface-container-highest);
+            color: var(--deep-navy);
+            font-family: var(--font-compact);
+            font-weight: 700;
+        }
+
+        .phase-item strong {
+            display: block;
+            color: var(--deep-navy);
+            font-size: 16px;
+            line-height: 22px;
+        }
+
+        .phase-item small {
+            display: block;
+            font-size: 13px;
+            line-height: 18px;
+        }
+
+        .phase-item.is-active {
+            background: var(--surface-white);
+            border-color: rgba(165, 60, 0, 0.28);
+            box-shadow: var(--shadow-active);
+        }
+
+        .phase-item.is-active .phase-number {
+            background: var(--brand-orange);
+            color: var(--surface-white);
+        }
+
+        .phase-item.is-complete .phase-number {
+            background: var(--secondary-container);
+            color: var(--deep-navy);
+        }
+
+        .phone-container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--surface-white);
+            border-radius: var(--radius-xl);
+            box-shadow: 0 24px 60px rgba(42, 58, 71, 0.18);
+            overflow: hidden;
+            border: 1px solid rgba(42, 58, 71, 0.18);
+            display: flex;
+            flex-direction: column;
+            height: min(760px, calc(100vh - 48px));
+            min-height: 640px;
+        }
+
+        .phone-header {
+            background: var(--deep-navy);
+            color: var(--inverse-on-surface);
+            padding: var(--space-2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-2);
+            border-bottom: 4px solid var(--brand-orange);
+        }
+
+        .phone-title {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .phone-title strong {
+            font-size: 18px;
+            font-weight: 800;
+            line-height: 24px;
+        }
+
+        .phone-title span {
+            color: #d1e2f3;
+            font-family: var(--font-compact);
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 18px;
+            text-transform: uppercase;
+        }
+
+        .status-pill,
+        .hint-chip {
+            border-radius: 999px;
+            font-family: var(--font-compact);
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 18px;
+            white-space: nowrap;
+        }
+
+        .status-pill {
+            background: var(--surface-white);
+            color: var(--primary);
+            padding: 8px 10px;
+        }
+
+        .call-strip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-2);
+            padding: 10px var(--space-2);
+            border-bottom: 1px solid var(--surface-container-highest);
+            background: var(--surface-container-low);
+            color: var(--secondary);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .signal-dots {
+            display: flex;
+            gap: 5px;
+        }
+
+        .signal-dots span {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--brand-orange);
+        }
+
+        .signal-dots span:nth-child(2) {
+            background: var(--tertiary-container);
+        }
+
+        .signal-dots span:nth-child(3) {
+            background: var(--secondary);
+        }
+
+        .chat-display {
+            flex: 1;
+            padding: 18px;
+            overflow-y: auto;
+            background: linear-gradient(180deg, var(--surface) 0%, var(--surface-white) 100%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bubble {
+            max-width: min(88%, 34rem);
+            padding: 12px 14px;
+            border-radius: var(--radius-lg);
+            font-size: 15px;
+            line-height: 22px;
+            animation: fadeIn 0.24s ease;
+        }
+
+        .bubble.bot {
+            background: var(--surface-white);
+            color: var(--on-surface);
+            align-self: flex-start;
+            border: 1px solid var(--surface-container-highest);
+            border-bottom-left-radius: var(--radius-sm);
+        }
+
+        .bubble.customer {
+            background: var(--primary);
+            color: var(--surface-white);
+            align-self: flex-end;
+            border-bottom-right-radius: var(--radius-sm);
+            box-shadow: 0 8px 18px rgba(165, 60, 0, 0.15);
+        }
+
+        .controls-area {
+            background: var(--surface-white);
+            border-top: 1px solid var(--surface-container-highest);
+            padding: var(--space-2);
+        }
+
+        .control-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-1);
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            color: var(--secondary);
+        }
+
+        .hint-chip {
+            background: var(--secondary-container);
+            color: var(--deep-navy);
+            padding: 4px 8px;
+        }
+
+        .voice-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .keypad-actions {
+            margin-top: 12px;
+        }
+
+        .btn {
+            min-height: 44px;
+            background: var(--surface-white);
+            border: 1px solid rgba(42, 58, 71, 0.18);
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: left;
+            transition: background-color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+            color: var(--deep-navy);
+        }
+
+        .btn:hover {
+            border-color: rgba(165, 60, 0, 0.45);
+            background: #fff7f2;
+            box-shadow: var(--shadow-active);
+            transform: translateY(-1px);
+        }
+
+        .btn:focus-visible,
+        .key:focus-visible {
+            outline: 2px solid var(--brand-orange);
+            outline-offset: 3px;
+        }
+
+        .btn[data-kind="dtmf"] {
+            border-left: 4px solid var(--action-blue);
+        }
+
+        .btn[data-kind="confirm"] {
+            border-left: 4px solid var(--brand-orange);
+        }
+
+        .btn[data-kind="risk"],
+        .btn.danger {
+            border-color: rgba(186, 26, 26, 0.24);
+            color: var(--error);
+        }
+
+        .btn.primary {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--surface-white);
+            text-align: center;
+        }
+
+        .btn.primary:hover {
+            background: #7e2c00;
+        }
+
+        .btn.secondary {
+            background: var(--surface-container-low);
+            text-align: center;
+        }
+
+        .keypad-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            max-width: 260px;
+            margin: 0 auto;
+            padding: 10px 0;
+        }
+
+        .key {
+            background: var(--surface-white);
+            border: 1px solid rgba(42, 58, 71, 0.18);
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(42, 58, 71, 0.08);
+            transition: background-color 0.12s ease, transform 0.12s ease, border-color 0.12s ease;
+        }
+
+        .key:hover {
+            border-color: rgba(25, 108, 255, 0.42);
+            background: #f7fbff;
+        }
+
+        .key:active {
+            background: var(--secondary-container);
+            transform: translateY(1px);
+        }
+
+        .key span {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--deep-navy);
+        }
+
+        .key small {
+            font-size: 9px;
+            color: var(--secondary);
+            text-transform: uppercase;
+        }
+
+        .keypad-display {
+            background: var(--inverse-surface);
+            color: var(--inverse-on-surface);
+            font-family: var(--font-compact);
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            padding: 10px;
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            min-height: 44px;
+            border-left: 4px solid var(--action-blue);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media (max-width: 860px) {
+            .app-shell {
+                grid-template-columns: 1fr;
+                align-items: start;
+            }
+
+            .context-panel {
+                gap: var(--space-2);
+            }
+
+            .phone-container {
+                max-width: none;
+                height: 720px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            body {
+                padding: 20px;
+            }
+
+            .context-title {
+                font-size: 40px;
+                line-height: 48px;
+            }
+
+            .context-copy {
+                font-size: 16px;
+                line-height: 24px;
+            }
+
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .phase-item {
+                grid-template-columns: 32px 1fr;
+                padding: 8px;
+            }
+
+            .phase-number {
+                width: 32px;
+                height: 32px;
+            }
+
+            .phone-container {
+                min-height: 620px;
+                height: 700px;
+            }
+
+            .phone-header,
+            .call-strip,
+            .control-head {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .status-pill,
+            .hint-chip {
+                white-space: normal;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<main class="app-shell" aria-label="Direct debit voicebot simulator">
+    <section class="context-panel" aria-label="Scenario context">
+        <div class="brand-row">
+            <span class="brand-tab">Alinta Energy</span>
+            <span class="eyebrow">Voicebot prototype</span>
+        </div>
+        <h1 class="context-title">Direct debit setup simulator</h1>
+        <p class="context-copy">Production IVR path for state routing, customer verification, and bank or card direct debit capture.</p>
+        <div class="meta-grid" aria-label="Simulation details">
+            <div class="meta-item">
+                <span class="meta-label">Channel</span>
+                <span class="meta-value">Genesys Cloud IVR</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Input modes</span>
+                <span class="meta-value">Voice and DTMF</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Payment paths</span>
+                <span class="meta-value">Bank or card</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Retry policy</span>
+                <span class="meta-value">Two attempts</span>
+            </div>
+        </div>
+        <div class="phase-panel" aria-label="Current journey stage">
+            <span class="phase-kicker">Journey state</span>
+            <ol class="phase-list">
+                <li class="phase-item" data-phase="entry">
+                    <span class="phase-number">1</span>
+                    <span><strong>Entry</strong><small>State and menu routing</small></span>
+                </li>
+                <li class="phase-item" data-phase="verify">
+                    <span class="phase-number">2</span>
+                    <span><strong>Verify</strong><small>Account and identity checks</small></span>
+                </li>
+                <li class="phase-item" data-phase="payment">
+                    <span class="phase-number">3</span>
+                    <span><strong>Payment</strong><small>Bank or secure card capture</small></span>
+                </li>
+                <li class="phase-item" data-phase="complete">
+                    <span class="phase-number">4</span>
+                    <span><strong>Complete</strong><small>Confirmation and close</small></span>
+                </li>
+                <li class="phase-item" data-phase="handoff">
+                    <span class="phase-number">5</span>
+                    <span><strong>Handoff</strong><small>Agent transfer path</small></span>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="phone-container" aria-label="Live call simulation">
+        <div class="phone-header">
+            <div class="phone-title">
+                <span>Genesys Cloud IVR</span>
+                <strong>Direct debit voice bot</strong>
+            </div>
+            <span class="status-pill" id="stateBadge">Starting</span>
+        </div>
+
+        <div class="call-strip" aria-label="Call status">
+            <span>Live call simulation</span>
+            <span class="signal-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+        </div>
+
+        <div class="chat-display" id="chatDisplay" role="log" aria-live="polite"></div>
+
+        <div class="controls-area">
+            <div id="voiceControls">
+                <div class="control-head">
+                    <div class="section-title" id="inputLabel">Select input option</div>
+                    <span class="hint-chip">Voice or DTMF</span>
+                </div>
+                <div class="voice-options" id="optionsContainer"></div>
+            </div>
+
+            <div id="keypadControls" class="hidden">
+                <div class="control-head">
+                    <div class="section-title">Secure keypad input</div>
+                    <span class="hint-chip">PCI-DSS mode</span>
+                </div>
+                <div class="keypad-display" id="keypadScreen" aria-live="polite">Ready</div>
+                <div class="keypad-grid" aria-label="Telephone keypad">
+                    <button type="button" class="key" onclick="pressKey('1')" aria-label="Press 1"><span>1</span><small>&nbsp;</small></button>
+                    <button type="button" class="key" onclick="pressKey('2')" aria-label="Press 2"><span>2</span><small>abc</small></button>
+                    <button type="button" class="key" onclick="pressKey('3')" aria-label="Press 3"><span>3</span><small>def</small></button>
+                    <button type="button" class="key" onclick="pressKey('4')" aria-label="Press 4"><span>4</span><small>ghi</small></button>
+                    <button type="button" class="key" onclick="pressKey('5')" aria-label="Press 5"><span>5</span><small>jkl</small></button>
+                    <button type="button" class="key" onclick="pressKey('6')" aria-label="Press 6"><span>6</span><small>mno</small></button>
+                    <button type="button" class="key" onclick="pressKey('7')" aria-label="Press 7"><span>7</span><small>pqrs</small></button>
+                    <button type="button" class="key" onclick="pressKey('8')" aria-label="Press 8"><span>8</span><small>tuv</small></button>
+                    <button type="button" class="key" onclick="pressKey('9')" aria-label="Press 9"><span>9</span><small>wxyz</small></button>
+                    <button type="button" class="key" onclick="pressKey('*')" aria-label="Press star"><span>*</span><small>&nbsp;</small></button>
+                    <button type="button" class="key" onclick="pressKey('0')" aria-label="Press 0"><span>0</span><small>+</small></button>
+                    <button type="button" class="key" onclick="pressKey('#')" aria-label="Press hash"><span>#</span><small>&nbsp;</small></button>
+                </div>
+                <div class="voice-options keypad-actions">
+                    <button type="button" class="btn primary" onclick="submitKeypad()">Confirm entry (#)</button>
+                    <button type="button" class="btn danger" onclick="simulateKeypadError()">Simulate keypad error or timeout</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    let currentState = "START";
+    let retries = 0;
+    let paymentMethod = "";
+    let enteredDigits = "";
+
+    const chatDisplay = document.getElementById("chatDisplay");
+    const optionsContainer = document.getElementById("optionsContainer");
+    const voiceControls = document.getElementById("voiceControls");
+    const keypadControls = document.getElementById("keypadControls");
+    const keypadScreen = document.getElementById("keypadScreen");
+    const inputLabel = document.getElementById("inputLabel");
+    const stateBadge = document.getElementById("stateBadge");
+    const progressItems = Array.from(document.querySelectorAll(".phase-item"));
+
+    const phaseOrder = ["entry", "verify", "payment", "complete", "handoff"];
+    const phaseByState = {
+        START: "entry",
+        QUEUE_WARN: "entry",
+        PRIVACY_DISCLOSURE: "entry",
+        PROD_MAIN_MENU: "entry",
+        NLU_GREETING: "verify",
+        VERIFY_ACCOUNT: "verify",
+        VERIFY_DOB: "verify",
+        CONFIRM_ACCOUNT: "verify",
+        SELECT_METHOD: "payment",
+        BANK_BSB: "payment",
+        BANK_ACC: "payment",
+        CARD_PCI: "payment",
+        SUCCESS: "complete",
+        GOODBYE: "complete",
+        AGENT_TRANSFER: "handoff"
+    };
+
+    const stateLabels = {
+        START: "State menu",
+        QUEUE_WARN: "Queue notice",
+        PRIVACY_DISCLOSURE: "Privacy notice",
+        PROD_MAIN_MENU: "Main menu",
+        NLU_GREETING: "Intent capture",
+        VERIFY_ACCOUNT: "Account check",
+        VERIFY_DOB: "Identity check",
+        CONFIRM_ACCOUNT: "Account confirm",
+        SELECT_METHOD: "Payment choice",
+        BANK_BSB: "BSB capture",
+        BANK_ACC: "Account capture",
+        CARD_PCI: "Secure card entry",
+        SUCCESS: "Direct debit set",
+        GOODBYE: "Call closed",
+        AGENT_TRANSFER: "Agent handoff"
+    };
+
+    function updateProgress(stepKey) {
+        const activePhase = phaseByState[stepKey] || "entry";
+        const activeIndex = phaseOrder.indexOf(activePhase);
+        stateBadge.innerText = stateLabels[stepKey] || stepKey;
+
+        progressItems.forEach(item => {
+            const itemIndex = phaseOrder.indexOf(item.dataset.phase);
+            item.classList.toggle("is-active", item.dataset.phase === activePhase);
+            item.classList.toggle("is-complete", itemIndex > -1 && itemIndex < activeIndex);
+        });
+    }
+
+    function getOptionKind(option) {
+        const label = option.label.toLowerCase();
+
+        if (option.next === "AGENT_TRANSFER" || label.includes("invalid") || label.includes("timeout") || label.includes("silence") || label.includes("wrong")) {
+            return "risk";
+        }
+
+        if (label.includes("[valid]") || label.includes("yes") || option.next === "SUCCESS") {
+            return "confirm";
+        }
+
+        if (label.includes("[dtmf]")) {
+            return "dtmf";
+        }
+
+        return "neutral";
+    }
+
+    function speak(text) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0;
+        const voices = window.speechSynthesis.getVoices();
+        const targetVoice = voices.find(v => v.lang.includes('en-AU') || v.lang.includes('en-GB'));
+        if (targetVoice) utterance.voice = targetVoice;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function addBubble(text, speaker) {
+        const bubble = document.createElement("div");
+        bubble.classList.add("bubble", speaker);
+        bubble.innerText = text;
+        chatDisplay.appendChild(bubble);
+        chatDisplay.scrollTop = chatDisplay.scrollHeight;
+        if (speaker === "bot") {
+            speak(text);
+        }
+    }
+
+    function setInterfaceMode(mode) {
+        if (mode === "keypad") {
+            voiceControls.classList.add("hidden");
+            keypadControls.classList.remove("hidden");
+            enteredDigits = "";
+            keypadScreen.innerText = "Ready";
+            keypadScreen.setAttribute("aria-label", "No digits entered");
+        } else {
+            voiceControls.classList.remove("hidden");
+            keypadControls.classList.add("hidden");
+        }
+    }
+
+    const flowSteps = {
+        START: {
+            bot: "Hi and welcome to Alinta Energy. Before we can put you through our main menu, please select the state you are calling from. For Victoria, Press 1. For New South Wales, press 2. For Queensland, press 3. For Western Australia, press 4. And for South Australia, please press 5.",
+            options: [
+                { label: "[DTMF] Press 1: Victoria", next: "QUEUE_WARN", text: "(Pressed 1 - Victoria)" },
+                { label: "[DTMF] Press 2: New South Wales", next: "QUEUE_WARN", text: "(Pressed 2 - NSW)" },
+                { label: "[DTMF] Press 3: Queensland", next: "QUEUE_WARN", text: "(Pressed 3 - QLD)" },
+                { label: "[DTMF] Press 4: Western Australia", next: "QUEUE_WARN", text: "(Pressed 4 - WA)" },
+                { label: "[DTMF] Press 5: South Australia", next: "QUEUE_WARN", text: "(Pressed 5 - SA)" }
+            ]
+        },
+        QUEUE_WARN: {
+            bot: "Thanks for calling Alinta Energy. We're currently experiencing longer than normal wait times. If it's not urgent, please consider calling us back later. Alternatively, you can visit my account or download the Alinta app.",
+            options: [
+                { label: "[Continue Audio]", next: "PRIVACY_DISCLOSURE", text: "(Listened to notice)" }
+            ]
+        },
+        PRIVACY_DISCLOSURE: {
+            bot: "Welcome to Alinta Energy. Calls are recorded for quality and training purposes. We collect, use and disclose your personal information, including credit information, for the purposes stated in our privacy collection notice and our privacy and credit reporting policies. To view these, visit alintaenergy.com.au/termsandconditions. These policies also tell you how you can access and correct your personal information or make a complaint. By continuing with this call, you understand and consent to your personal information being handled in this way.",
+            options: [
+                { label: "[Continue to Production Main Menu]", next: "PROD_MAIN_MENU", text: "(Consented by staying on line)" }
+            ]
+        },
+        PROD_MAIN_MENU: {
+            bot: "To report a fault or emergency, press 1. If you are an existing Alinta Energy customer, press 2. If you'd like to join, press 3. To hear these options again, press the Star key.",
+            options: [
+                { label: "[DTMF] Press 1: Fault or Emergency", next: "AGENT_TRANSFER", text: "(Pressed 1)" },
+                { label: "[DTMF] Press 2: Existing Customer (Enter NLU Menu)", next: "NLU_GREETING", text: "(Pressed 2)" },
+                { label: "[DTMF] Press 3: Join", next: "AGENT_TRANSFER", text: "(Pressed 3)" }
+            ]
+        },
+        NLU_GREETING: {
+            bot: "In a few words, can you tell me what this call is regarding?",
+            options: [
+                { label: "\"I'm looking to set up my direct debit.\"", next: "VERIFY_ACCOUNT", text: "I'm looking to set up my direct debit." },
+                { label: "\"Check my account balance.\"", next: "AGENT_TRANSFER", text: "Check my account balance." },
+                { label: "\"Speak to someone.\"", next: "AGENT_TRANSFER", text: "Speak to someone." }
+            ]
+        },
+        VERIFY_ACCOUNT: {
+            bot: "In order to proceed, we need to identify your account. Please speak your nine-digit account number.",
+            options: [
+                { label: "[Valid] \"My account number is 1 2 3 4 5 6 7 8 9\"", next: "VERIFY_DOB", text: "My account number is 1 2 3 4 5 6 7 8 9", action: () => retries = 0 },
+                { label: "[Invalid] \"Account number 0 0 0\"", next: "RETRY_ACCOUNT", text: "Account 0 0 0" },
+                { label: "[Timeout / Silence]", next: "RETRY_ACCOUNT", text: "[Silence]" }
+            ]
+        },
+        VERIFY_DOB: {
+            bot: "Thank you. To verify your identity, please speak your date of birth, including day, month, and four-digit year.",
+            options: [
+                { label: "[Valid] \"27th of December 1986\"", next: "CONFIRM_ACCOUNT", text: "27th of December 1986", action: () => retries = 0 },
+                { label: "[Invalid Format or Wrong Date]", next: "RETRY_DOB", text: "27th of 12 86" },
+                { label: "[Timeout / Silence]", next: "RETRY_DOB", text: "[No Input]" }
+            ]
+        },
+        CONFIRM_ACCOUNT: {
+            bot: "Just to confirm, this is your account ending in 6 7 8 9, which is an electricity account, correct? The account balance is currently zero dollars and the next bill date is on the 24th of August, 2026.",
+            options: [
+                { label: "\"Yes, that's correct.\"", next: "SELECT_METHOD", text: "Yes, that's correct." },
+                { label: "\"No, that's wrong.\"", next: "AGENT_TRANSFER", text: "No, that's wrong." }
+            ]
+        },
+        SELECT_METHOD: {
+            bot: "By continuing, you confirm you are authorized to set up direct debit using this payment method. Would you like to use a bank account, or a credit or debit card?",
+            options: [
+                { label: "\"Bank account\"", next: "BANK_BSB", text: "Bank account", action: () => { paymentMethod = "BANK"; retries = 0; } },
+                { label: "\"Credit or debit card\"", next: "CARD_PCI", text: "Credit card", action: () => { paymentMethod = "CARD"; retries = 0; } }
+            ]
+        },
+        BANK_BSB: {
+            bot: "Please say your six-digit BSB number.",
+            options: [
+                { label: "[Valid] \"BSB is 0 6 3 1 2 3\"", next: "BANK_ACC", text: "BSB is 0 6 3 1 2 3", action: () => retries = 0 },
+                { label: "[Invalid / Missing digits]", next: "RETRY_BSB", text: "0 6 3" },
+                { label: "[Timeout]", next: "RETRY_BSB", text: "[Silence]" }
+            ]
+        },
+        BANK_ACC: {
+            bot: "Got it. Now, please read out your bank account number.",
+            options: [
+                { label: "[Valid] \"Account number 1 1 2 2 3 3 4 4\"", next: "SUCCESS", text: "Account number 1 1 2 2 3 3 4 4", action: () => retries = 0 },
+                { label: "[Invalid Account Number]", next: "RETRY_BANK_ACC", text: "Account number 0" },
+                { label: "[Timeout]", next: "RETRY_BANK_ACC", text: "[Silence]" }
+            ]
+        },
+        SUCCESS: {
+            bot: "That's all set up and done. Your next direct debit is due on the 24th of August, 2026. You will receive the terms and conditions via your preferred contact method. Now, do you have anything else you would like to get done?",
+            options: [
+                { label: "\"No, that's all, thank you.\"", next: "GOODBYE", text: "No, that's all, thank you." },
+                { label: "\"Yes, I want to check something else.\"", next: "NLU_GREETING", text: "Yes, I want to check something else." }
+            ]
+        },
+        GOODBYE: {
+            bot: "Thank you for calling Alinta Energy. Have a wonderful day, goodbye.",
+            options: []
+        },
+        AGENT_TRANSFER: {
+            bot: "Sorry, that didn't work. Please hold while I connect you to an agent.",
+            options: []
+        }
+    };
+
+    function executeStep(stepKey) {
+        currentState = stepKey;
+        updateProgress(stepKey);
+        
+        if (stepKey === "CARD_PCI") {
+            setInterfaceMode("keypad");
+            addBubble("Please use your telephone keypad to type your card number, expiry, and secure code, followed by the hash key.", "bot");
+            return;
+        }
+
+        setInterfaceMode("voice");
+        const step = flowSteps[stepKey];
+        addBubble(step.bot, "bot");
+
+        optionsContainer.innerHTML = "";
+        
+        if (step.options.length === 0) {
+            inputLabel.innerText = "Call State Closed";
+            const resetBtn = document.createElement("button");
+            resetBtn.className = "btn";
+            resetBtn.classList.add("primary");
+            resetBtn.type = "button";
+            resetBtn.innerText = "Restart Simulation Flow";
+            resetBtn.onclick = () => { retries = 0; paymentMethod = ""; chatDisplay.innerHTML = ""; executeStep("START"); };
+            optionsContainer.appendChild(resetBtn);
+            return;
+        }
+
+        inputLabel.innerText = (stepKey === "START" || stepKey === "PROD_MAIN_MENU") ? "Select keypad entry option" : "Respond to bot";
+
+        step.options.forEach(opt => {
+            const btn = document.createElement("button");
+            btn.className = "btn";
+            btn.type = "button";
+            btn.dataset.kind = getOptionKind(opt);
+            btn.innerText = opt.label;
+            btn.onclick = () => {
+                if(opt.action) opt.action();
+                addBubble(opt.text, "customer");
+                setTimeout(() => {
+                    handleCustomTransitions(opt.next);
+                }, 1000);
+            };
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function handleCustomTransitions(nextStep) {
+        if (nextStep === "RETRY_ACCOUNT") {
+            retries++;
+            if (retries >= 2) {
+                executeStep("AGENT_TRANSFER");
+            } else {
+                addBubble("Sorry, I couldn't find an account matching those details. Let's try that one more time. Please read out your nine-digit account number clearly.", "bot");
+            }
+        } else if (nextStep === "RETRY_DOB") {
+            retries++;
+            if (retries >= 2) {
+                executeStep("AGENT_TRANSFER");
+            } else {
+                addBubble("Sorry, that date of birth doesn't look quite right. Please say your date of birth again, including the full four digit year.", "bot");
+            }
+        } else if (nextStep === "RETRY_BSB") {
+            retries++;
+            if (retries >= 2) {
+                executeStep("AGENT_TRANSFER");
+            } else {
+                addBubble("Sorry, a BSB should be exactly six digits long. Please say your six-digit BSB number again.", "bot");
+            }
+        } else if (nextStep === "RETRY_BANK_ACC") {
+            retries++;
+            if (retries >= 2) {
+                executeStep("AGENT_TRANSFER");
+            } else {
+                addBubble("Sorry, that account number doesn't look quite right. Please say your bank account number again.", "bot");
+            }
+        } else {
+            executeStep(nextStep);
+        }
+    }
+
+    function pressKey(num) {
+        if (enteredDigits.length < 19) {
+            enteredDigits += num;
+            keypadScreen.innerText = "*".repeat(enteredDigits.length);
+            keypadScreen.setAttribute("aria-label", `${enteredDigits.length} digits entered`);
+        }
+    }
+
+    function submitKeypad() {
+        if (enteredDigits.length > 5) {
+            addBubble("(Card Details Entered via Keypad)", "customer");
+            setInterfaceMode("voice");
+            setTimeout(() => {
+                executeStep("SUCCESS");
+            }, 1000);
+        } else {
+            simulateKeypadError();
+        }
+    }
+
+    function simulateKeypadError() {
+        retries++;
+        if (retries >= 2) {
+            setInterfaceMode("voice");
+            executeStep("AGENT_TRANSFER");
+        } else {
+            enteredDigits = "";
+            keypadScreen.innerText = "Ready";
+            keypadScreen.setAttribute("aria-label", "No digits entered");
+            addBubble("We are experiencing an issue securely processing your card entries. Please enter your card number using your keypad.", "bot");
+        }
+    }
+
+    window.onload = () => {
+        window.speechSynthesis.getVoices();
+        executeStep("START");
+    };
+</script>
+
+</body>
+</html>
