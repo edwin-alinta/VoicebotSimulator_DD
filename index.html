@@ -396,6 +396,19 @@
             margin-top: 12px;
         }
 
+        .secure-banner {
+            background: var(--error);
+            color: var(--surface-white);
+            font-family: var(--font-compact);
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            letter-spacing: 0.02em;
+        }
+
         .btn {
             min-height: 44px;
             background: var(--surface-white);
@@ -512,6 +525,168 @@
             margin-bottom: 12px;
             min-height: 44px;
             border-left: 4px solid var(--action-blue);
+        }
+
+        .nlu-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 14px;
+            padding: 8px 14px;
+            background: var(--inverse-surface);
+            color: var(--inverse-on-surface);
+            font-family: var(--font-compact);
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        .nlu-item b {
+            color: var(--outline-variant);
+            font-weight: 600;
+            margin-right: 4px;
+        }
+
+        .nlu-conf-high { color: #66bb6a; }
+        .nlu-conf-low  { color: #ff7043; }
+
+        .retry-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 999px;
+            background: var(--error-container);
+            color: var(--error);
+            font-family: var(--font-compact);
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        .phase-item.is-failed {
+            background: var(--error-container);
+            border-color: rgba(186, 26, 26, 0.24);
+        }
+
+        .phase-item.is-failed .phase-number {
+            background: var(--error);
+            color: var(--surface-white);
+        }
+
+        .scenario-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+        }
+
+        .scenario-btn {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 10px 12px;
+            border: 1px solid var(--surface-container-highest);
+            border-radius: var(--radius-md);
+            background: var(--surface-white);
+            cursor: pointer;
+            text-align: left;
+            font: inherit;
+            transition: border-color 0.16s ease, box-shadow 0.16s ease;
+        }
+
+        .scenario-btn:hover {
+            border-color: rgba(165, 60, 0, 0.45);
+            box-shadow: var(--shadow-active);
+        }
+
+        .scenario-btn:focus-visible {
+            outline: 2px solid var(--brand-orange);
+            outline-offset: 3px;
+        }
+
+        .scenario-btn strong {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--deep-navy);
+        }
+
+        .scenario-btn small {
+            font-size: 12px;
+            color: var(--secondary);
+        }
+
+        .scenario-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .call-timer {
+            font-family: var(--font-compact);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--brand-orange);
+            letter-spacing: 0.04em;
+        }
+
+        .speaking-icon {
+            display: inline-flex;
+            gap: 2px;
+            align-items: flex-end;
+            height: 14px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        .speaking-icon span {
+            display: block;
+            width: 3px;
+            background: var(--brand-orange);
+            border-radius: 1px;
+            animation: barBounce 0.9s ease-in-out infinite;
+        }
+
+        .speaking-icon span:nth-child(1) { height: 6px;  animation-delay: 0s; }
+        .speaking-icon span:nth-child(2) { height: 10px; animation-delay: 0.15s; }
+        .speaking-icon span:nth-child(3) { height: 4px;  animation-delay: 0.3s; }
+
+        @keyframes barBounce {
+            0%, 100% { transform: scaleY(0.5); }
+            50%      { transform: scaleY(1.4); }
+        }
+
+        .scenario-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 8px 0;
+            color: var(--secondary);
+            font-family: var(--font-compact);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .scenario-divider::before,
+        .scenario-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--surface-container-highest);
+        }
+
+        .barge-tooltip {
+            padding: 4px 8px;
+            background: var(--secondary-container);
+            color: var(--deep-navy);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-compact);
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 6px;
+            animation: fadeIn 0.24s ease;
         }
 
         .hidden {
@@ -651,6 +826,25 @@
                 </li>
             </ol>
         </div>
+        <div class="scenario-panel" aria-label="Demo scenarios">
+            <span class="phase-kicker">Quick scenarios</span>
+            <button type="button" class="scenario-btn" onclick="playScenario(0)">
+                <strong>Happy path — bank</strong>
+                <small>VIC → verify → bank BSB + account → success</small>
+            </button>
+            <button type="button" class="scenario-btn" onclick="playScenario(1)">
+                <strong>Happy path — card</strong>
+                <small>VIC → verify → card PCI capture (manual)</small>
+            </button>
+            <button type="button" class="scenario-btn" onclick="playScenario(2)">
+                <strong>Invalid BSB → recovers</strong>
+                <small>BSB retry then valid entry → success</small>
+            </button>
+            <button type="button" class="scenario-btn" onclick="playScenario(3)">
+                <strong>Silent → agent transfer</strong>
+                <small>No input twice → escalation</small>
+            </button>
+        </div>
     </section>
 
     <section class="phone-container" aria-label="Live call simulation">
@@ -664,10 +858,18 @@
 
         <div class="call-strip" aria-label="Call status">
             <span>Live call simulation</span>
+            <span class="call-timer" id="callTimer">00:00</span>
             <span class="signal-dots" aria-hidden="true"><span></span><span></span><span></span></span>
         </div>
 
         <div class="chat-display" id="chatDisplay" role="log" aria-live="polite"></div>
+
+        <div class="nlu-strip" aria-label="NLU debug" aria-live="polite">
+            <span class="nlu-item"><b>Intent:</b> <span id="nluIntent">—</span></span>
+            <span class="nlu-item"><b>Confidence:</b> <span id="nluConf">—</span></span>
+            <span class="nlu-item"><b>Slots:</b> <span id="nluSlots">—</span></span>
+            <span class="nlu-item"><b>Retries:</b> <span id="nluRetries">0</span></span>
+        </div>
 
         <div class="controls-area">
             <div id="voiceControls">
@@ -680,9 +882,10 @@
 
             <div id="keypadControls" class="hidden">
                 <div class="control-head">
-                    <div class="section-title">Secure keypad input</div>
-                    <span class="hint-chip">PCI-DSS mode</span>
+                    <div class="section-title" id="keypadLabel">Secure keypad input</div>
+                    <span class="hint-chip" id="keypadHint">PCI-DSS mode</span>
                 </div>
+                <div class="secure-banner hidden" id="secureBanner">🔒 Secure — not recorded</div>
                 <div class="keypad-display" id="keypadScreen" aria-live="polite">Ready</div>
                 <div class="keypad-grid" aria-label="Telephone keypad">
                     <button type="button" class="key" onclick="pressKey('1')" aria-label="Press 1"><span>1</span><small>&nbsp;</small></button>
@@ -709,9 +912,84 @@
 
 <script>
     let currentState = "START";
-    let retries = 0;
     let paymentMethod = "";
     let enteredDigits = "";
+    let preferredVoice = null;
+    let preferredVoiceResolved = false;
+    let cardStepIndex = 0;
+    let currentCardStep = null;
+    let capturedCard = {};
+    let audioCtx;
+    let callStartTime = null;
+    let callTimerInterval = null;
+    let scenarioPlaying = false;
+    let scenarioQueue = [];
+    let activeSpeakingBubble = null;
+    let bargeInTimer = null;
+    let cardRetries = 0;
+
+    const retrySlots = {
+        accountNumber: { noMatch: 0, noInput: 0 },
+        dob: { noMatch: 0, noInput: 0 },
+        postcode: { noMatch: 0, noInput: 0 },
+        bsb: { noMatch: 0, noInput: 0 },
+        bankName: { noMatch: 0, noInput: 0 },
+        bankAccount: { noMatch: 0, noInput: 0 }
+    };
+
+    const slotByState = {
+        VERIFY_ACCOUNT: "accountNumber",
+        VERIFY_DOB: "dob",
+        VERIFY_POSTCODE: "postcode",
+        BANK_BSB: "bsb",
+        BANK_NAME: "bankName",
+        BANK_ACC: "bankAccount"
+    };
+
+    function resetSlot(slot) {
+        if (retrySlots[slot]) retrySlots[slot] = { noMatch: 0, noInput: 0 };
+    }
+
+    function resetAllSlots() {
+        for (const k of Object.keys(retrySlots)) retrySlots[k] = { noMatch: 0, noInput: 0 };
+        cardRetries = 0;
+    }
+
+    function slotTotal(slot) {
+        const s = retrySlots[slot];
+        return s ? s.noMatch + s.noInput : 0;
+    }
+
+    function activeRetryCount() {
+        const slot = slotByState[currentState];
+        if (slot) return slotTotal(slot);
+        if (currentState === "CARD_PCI") return cardRetries;
+        return 0;
+    }
+
+    const cardSteps = [
+        {
+            key: 'PAN',
+            label: 'Card number',
+            prompt: "For your security, this part of the call is now in secure mode and is not recorded. Please enter your 16-digit card number using your keypad, followed by the hash key.",
+            min: 13, max: 19,
+            validator: v => luhnCheck(v) && v.length >= 13
+        },
+        {
+            key: 'EXP',
+            label: 'Expiry',
+            prompt: "Now, please enter your card's expiry date as four digits, month then year, for example 0 8 2 8 for August 2028, followed by hash.",
+            min: 4, max: 4,
+            validator: v => /^(0[1-9]|1[0-2])\d{2}$/.test(v) && isFutureExpiry(v)
+        },
+        {
+            key: 'CVV',
+            label: 'Security code',
+            prompt: "Finally, please enter the three or four digit security code from the back of your card, followed by hash.",
+            min: 3, max: 4,
+            validator: v => /^\d{3,4}$/.test(v)
+        }
+    ];
 
     const chatDisplay = document.getElementById("chatDisplay");
     const optionsContainer = document.getElementById("optionsContainer");
@@ -720,7 +998,16 @@
     const keypadScreen = document.getElementById("keypadScreen");
     const inputLabel = document.getElementById("inputLabel");
     const stateBadge = document.getElementById("stateBadge");
+    const secureBanner = document.getElementById("secureBanner");
+    const keypadHint = document.getElementById("keypadHint");
+    const keypadLabel = document.getElementById("keypadLabel");
     const progressItems = Array.from(document.querySelectorAll(".phase-item"));
+    const nluIntent = document.getElementById("nluIntent");
+    const nluConf = document.getElementById("nluConf");
+    const nluSlots = document.getElementById("nluSlots");
+    const nluRetries = document.getElementById("nluRetries");
+    const callTimerEl = document.getElementById("callTimer");
+    const scenarioBtns = Array.from(document.querySelectorAll(".scenario-btn"));
 
     const phaseOrder = ["entry", "verify", "payment", "complete", "handoff"];
     const phaseByState = {
@@ -731,11 +1018,14 @@
         NLU_GREETING: "verify",
         VERIFY_ACCOUNT: "verify",
         VERIFY_DOB: "verify",
+        VERIFY_POSTCODE: "verify",
         CONFIRM_ACCOUNT: "verify",
         SELECT_METHOD: "payment",
         BANK_BSB: "payment",
         BANK_ACC: "payment",
+        BANK_NAME: "payment",
         CARD_PCI: "payment",
+        DDR_CONSENT: "payment",
         SUCCESS: "complete",
         GOODBYE: "complete",
         AGENT_TRANSFER: "handoff"
@@ -749,25 +1039,147 @@
         NLU_GREETING: "Intent capture",
         VERIFY_ACCOUNT: "Account check",
         VERIFY_DOB: "Identity check",
+        VERIFY_POSTCODE: "Postcode check",
         CONFIRM_ACCOUNT: "Account confirm",
         SELECT_METHOD: "Payment choice",
         BANK_BSB: "BSB capture",
         BANK_ACC: "Account capture",
+        BANK_NAME: "Name capture",
         CARD_PCI: "Secure card entry",
-        SUCCESS: "Direct debit set",
+        DDR_CONSENT: "DDR consent",
+        SUCCESS: "DDR confirmed",
         GOODBYE: "Call closed",
         AGENT_TRANSFER: "Agent handoff"
     };
 
+    const nluByState = {
+        START: { intent: "dtmf.state_select", slots: "state: —" },
+        QUEUE_WARN: { intent: "system.continue", slots: "—" },
+        PRIVACY_DISCLOSURE: { intent: "system.continue", slots: "—" },
+        PROD_MAIN_MENU: { intent: "dtmf.menu_select", slots: "menu: —" },
+        NLU_GREETING: { intent: "direct_debit.setup", slots: "product: direct_debit" },
+        VERIFY_ACCOUNT: { intent: "provide.account_number", slots: "acct: 123456789" },
+        VERIFY_DOB: { intent: "provide.date_of_birth", slots: "dob: 2712" },
+        VERIFY_POSTCODE: { intent: "provide.postcode", slots: "postcode: 3000" },
+        CONFIRM_ACCOUNT: { intent: "confirm.affirmative", slots: "acct_tail: 6789" },
+        SELECT_METHOD: { intent: "payment.method_select", slots: "method: —" },
+        BANK_BSB: { intent: "provide.bsb", slots: "bsb: 063123" },
+        BANK_ACC: { intent: "provide.bank_account", slots: "acct: 11223344" },
+        BANK_NAME: { intent: "provide.account_holder", slots: "name: John Smith" },
+        CARD_PCI: { intent: "dtmf.card_capture", slots: "mode: PCI_secure" },
+        DDR_CONSENT: { intent: "confirm.ddr_consent", slots: "agreement: DDR_SA" },
+        SUCCESS: { intent: "system.complete", slots: "outcome: dd_active" },
+        GOODBYE: { intent: "system.farewell", slots: "—" },
+        AGENT_TRANSFER: { intent: "system.escalate", slots: "reason: containment_fail" }
+    };
+
+    const demoScenarios = [
+        { name: "Happy path — bank", picks: [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+        { name: "Happy path — card", picks: [0, 0, 0, 1, 0, 0, 0, 0, 0, 1] },
+        { name: "Invalid BSB → recovers", picks: [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0] },
+        { name: "Silent → agent transfer", picks: [0, 0, 0, 1, 0, 2, 2] }
+    ];
+
+    function updateNlu(nextState, optLabel) {
+        const isRetry = nextState.startsWith("NOMATCH_") || nextState.startsWith("NOINPUT_");
+        const targetState = isRetry ? currentState : nextState;
+        const data = nluByState[targetState] || { intent: "unknown", slots: "—" };
+        const conf = isRetry
+            ? (Math.random() * 0.15 + 0.22).toFixed(2)
+            : (Math.random() * 0.26 + 0.72).toFixed(2);
+        nluIntent.textContent = isRetry
+            ? (nextState.startsWith("NOINPUT_") ? "no_input" : "no_match")
+            : data.intent;
+        nluConf.textContent = conf;
+        nluConf.className = parseFloat(conf) >= 0.7 ? "nlu-conf-high" : "nlu-conf-low";
+        nluSlots.textContent = isRetry ? "—" : data.slots;
+        nluRetries.textContent = activeRetryCount();
+    }
+
+    function resetNlu() {
+        nluIntent.textContent = "—";
+        nluConf.textContent = "—";
+        nluConf.className = "";
+        nluSlots.textContent = "—";
+        nluRetries.textContent = "0";
+    }
+
+    function startCallTimer() {
+        callStartTime = Date.now();
+        clearInterval(callTimerInterval);
+        callTimerInterval = setInterval(() => {
+            const elapsed = Math.floor((Date.now() - callStartTime) / 1000);
+            const mm = String(Math.floor(elapsed / 60)).padStart(2, "0");
+            const ss = String(elapsed % 60).padStart(2, "0");
+            callTimerEl.textContent = mm + ":" + ss;
+        }, 1000);
+    }
+
+    function addScenarioDivider(name) {
+        const d = document.createElement("div");
+        d.className = "scenario-divider";
+        d.textContent = name;
+        chatDisplay.appendChild(d);
+        chatDisplay.scrollTop = chatDisplay.scrollHeight;
+    }
+
+    function playScenario(index) {
+        const scenario = demoScenarios[index];
+        scenarioBtns.forEach(b => b.disabled = true);
+        window.speechSynthesis.cancel();
+        addScenarioDivider(scenario.name);
+        resetAllSlots(); paymentMethod = ""; currentCardStep = null; capturedCard = {}; cardStepIndex = 0;
+        resetNlu();
+        startCallTimer();
+        scenarioPlaying = true;
+        scenarioQueue = [...scenario.picks];
+        executeStep("START");
+        scheduleNextPick();
+    }
+
+    function scheduleNextPick() {
+        if (scenarioQueue.length === 0) {
+            scenarioPlaying = false;
+            scenarioBtns.forEach(b => b.disabled = false);
+            return;
+        }
+        setTimeout(() => {
+            const pickIdx = scenarioQueue.shift();
+            const buttons = optionsContainer.querySelectorAll(".btn");
+            if (buttons[pickIdx]) {
+                buttons[pickIdx].click();
+            } else {
+                scenarioPlaying = false;
+                scenarioBtns.forEach(b => b.disabled = false);
+            }
+            setTimeout(scheduleNextPick, 2500);
+        }, 2000);
+    }
+
     function updateProgress(stepKey) {
         const activePhase = phaseByState[stepKey] || "entry";
         const activeIndex = phaseOrder.indexOf(activePhase);
+        const isFailure = stepKey === "AGENT_TRANSFER";
+        const retryCount = activeRetryCount();
         stateBadge.innerText = stateLabels[stepKey] || stepKey;
 
         progressItems.forEach(item => {
             const itemIndex = phaseOrder.indexOf(item.dataset.phase);
             item.classList.toggle("is-active", item.dataset.phase === activePhase);
-            item.classList.toggle("is-complete", itemIndex > -1 && itemIndex < activeIndex);
+            item.classList.toggle("is-complete", itemIndex > -1 && itemIndex < activeIndex && !isFailure);
+            item.classList.toggle("is-failed", item.dataset.phase === activePhase && isFailure);
+
+            let badge = item.querySelector(".retry-badge");
+            if (item.dataset.phase === activePhase && retryCount > 0) {
+                if (!badge) {
+                    badge = document.createElement("span");
+                    badge.className = "retry-badge";
+                    item.querySelector("span:last-child").appendChild(badge);
+                }
+                badge.textContent = retryCount + (retryCount === 1 ? " retry" : " retries");
+            } else if (badge) {
+                badge.remove();
+            }
         });
     }
 
@@ -789,24 +1201,155 @@
         return "neutral";
     }
 
-    function speak(text) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 1.0;
+    function resolvePreferredVoice() {
+        if (preferredVoiceResolved) {
+            return preferredVoice;
+        }
+
         const voices = window.speechSynthesis.getVoices();
-        const targetVoice = voices.find(v => v.lang.includes('en-AU') || v.lang.includes('en-GB'));
-        if (targetVoice) utterance.voice = targetVoice;
+
+        if (voices.length === 0) {
+            preferredVoiceResolved = true;
+            return null;
+        }
+
+        const isEnglishVoice = voice => voice.lang.toLowerCase().startsWith("en");
+        const isRegionalVoice = voice => voice.lang.includes("en-AU") || voice.lang.includes("en-GB");
+        const isNaturalVoice = voice => /natural|neural|online/i.test(voice.name);
+
+        preferredVoice =
+            voices.find(voice => voice.default && isEnglishVoice(voice)) ||
+            voices.find(voice => isRegionalVoice(voice) && isNaturalVoice(voice)) ||
+            voices.find(voice => isEnglishVoice(voice) && isNaturalVoice(voice)) ||
+            voices.find(isRegionalVoice) ||
+            null;
+
+        preferredVoiceResolved = true;
+        return preferredVoice;
+    }
+
+    function luhnCheck(num) {
+        let sum = 0, alt = false;
+        for (let i = num.length - 1; i >= 0; i--) {
+            let n = parseInt(num.charAt(i), 10);
+            if (alt) { n *= 2; if (n > 9) n -= 9; }
+            sum += n; alt = !alt;
+        }
+        return sum % 10 === 0;
+    }
+
+    function isFutureExpiry(mmyy) {
+        const mm = parseInt(mmyy.slice(0, 2), 10);
+        const yy = parseInt(mmyy.slice(2), 10) + 2000;
+        const end = new Date(yy, mm, 0);
+        return end >= new Date();
+    }
+
+    function pciBeep() {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.frequency.value = 425;
+        gain.gain.value = 0.08;
+        osc.connect(gain).connect(audioCtx.destination);
+        osc.start();
+        setTimeout(() => osc.stop(), 90);
+    }
+
+    function formatSecureDisplay(digits, stepKey) {
+        if (!digits.length) return "Ready";
+        if (stepKey === "PAN") {
+            const groups = [];
+            for (let i = 0; i < digits.length; i += 4) {
+                groups.push("•".repeat(Math.min(4, digits.length - i)));
+            }
+            return groups.join(" ");
+        }
+        return "•".repeat(digits.length);
+    }
+
+    const DIGIT_SEQ_RE = /(?:\d\s){2,}\d/g;
+
+    function makeUtterance(text, rate) {
+        const u = new SpeechSynthesisUtterance(text);
+        u.rate = rate;
+        const v = resolvePreferredVoice();
+        if (v) u.voice = v;
+        return u;
+    }
+
+    function chainSegments(segments, index, onEnd) {
+        if (index >= segments.length) { if (onEnd) onEnd(); return; }
+        const seg = segments[index];
+        const utterance = makeUtterance(seg.text, seg.digits ? 0.85 : 0.95);
+        utterance.onend = () => {
+            const pause = seg.digits && segments[index + 1]?.digits ? 300 : 0;
+            setTimeout(() => chainSegments(segments, index + 1, onEnd), pause);
+        };
         window.speechSynthesis.speak(utterance);
+    }
+
+    function speak(text, onEnd) {
+        window.speechSynthesis.cancel();
+
+        DIGIT_SEQ_RE.lastIndex = 0;
+        const hasDigits = DIGIT_SEQ_RE.test(text);
+        DIGIT_SEQ_RE.lastIndex = 0;
+
+        if (!hasDigits) {
+            const u = makeUtterance(text, 0.95);
+            u.onend = onEnd || null;
+            window.speechSynthesis.speak(u);
+            return;
+        }
+
+        const segments = [];
+        let lastIdx = 0;
+        let match;
+        while ((match = DIGIT_SEQ_RE.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                segments.push({ text: text.slice(lastIdx, match.index), digits: false });
+            }
+            const digits = match[0].split(/\s+/);
+            const chunkSize = digits.length % 4 === 0 ? 4 : 3;
+            for (let i = 0; i < digits.length; i += chunkSize) {
+                segments.push({ text: digits.slice(i, i + chunkSize).join(" "), digits: true });
+            }
+            lastIdx = match.index + match[0].length;
+        }
+        if (lastIdx < text.length) {
+            segments.push({ text: text.slice(lastIdx), digits: false });
+        }
+
+        chainSegments(segments, 0, onEnd);
     }
 
     function addBubble(text, speaker) {
         const bubble = document.createElement("div");
         bubble.classList.add("bubble", speaker);
-        bubble.innerText = text;
+
+        if (speaker === "bot") {
+            const icon = document.createElement("span");
+            icon.className = "speaking-icon";
+            icon.setAttribute("aria-hidden", "true");
+            icon.innerHTML = "<span></span><span></span><span></span>";
+            bubble.appendChild(icon);
+            bubble.appendChild(document.createTextNode(text));
+            activeSpeakingBubble = bubble;
+        } else {
+            bubble.textContent = text;
+        }
+
         chatDisplay.appendChild(bubble);
         chatDisplay.scrollTop = chatDisplay.scrollHeight;
+
         if (speaker === "bot") {
-            speak(text);
+            speak(text, () => {
+                const iconEl = bubble.querySelector(".speaking-icon");
+                if (iconEl) iconEl.remove();
+                activeSpeakingBubble = null;
+            });
         }
     }
 
@@ -863,19 +1406,30 @@
             ]
         },
         VERIFY_ACCOUNT: {
-            bot: "In order to proceed, we need to identify your account. Please speak your nine-digit account number.",
+            bot: "To bring up your account, please say your nine-digit account number. Take your time.",
             options: [
-                { label: "[Valid] \"My account number is 1 2 3 4 5 6 7 8 9\"", next: "VERIFY_DOB", text: "My account number is 1 2 3 4 5 6 7 8 9", action: () => retries = 0 },
-                { label: "[Invalid] \"Account number 0 0 0\"", next: "RETRY_ACCOUNT", text: "Account 0 0 0" },
-                { label: "[Timeout / Silence]", next: "RETRY_ACCOUNT", text: "[Silence]" }
+                { label: "[Valid] \"My account is 1 2 3 4 5 6 7 8 9\"", next: "VERIFY_DOB", text: "My account is 1 2 3 4 5 6 7 8 9", action: () => resetSlot("accountNumber") },
+                { label: "[No-Match] \"It's 0 0 0\"", next: "NOMATCH_ACCOUNT", text: "It's 0 0 0" },
+                { label: "[No-Input / Silence]", next: "NOINPUT_ACCOUNT", text: "[silence \u2014 8 sec no-speech timeout]" },
+                { label: "\"Speak to a human\"", next: "AGENT_TRANSFER", text: "Speak to a human." }
             ]
         },
         VERIFY_DOB: {
-            bot: "Thank you. To verify your identity, please speak your date of birth, including day, month, and four-digit year.",
+            bot: "Thank you. To verify your identity, please say the day and month of your date of birth as four digits. For example, for the 24th of January, say two four zero one.",
             options: [
-                { label: "[Valid] \"27th of December 1986\"", next: "CONFIRM_ACCOUNT", text: "27th of December 1986", action: () => retries = 0 },
-                { label: "[Invalid Format or Wrong Date]", next: "RETRY_DOB", text: "27th of 12 86" },
-                { label: "[Timeout / Silence]", next: "RETRY_DOB", text: "[No Input]" }
+                { label: "[Valid] \"two seven one two\" (27 Dec)", next: "VERIFY_POSTCODE", text: "two seven one two", action: () => resetSlot("dob") },
+                { label: "[No-Match] Partial or unclear digits", next: "NOMATCH_DOB", text: "two seven" },
+                { label: "[No-Input / Silence]", next: "NOINPUT_DOB", text: "[silence \u2014 no input detected]" },
+                { label: "\"Speak to a human\"", next: "AGENT_TRANSFER", text: "Speak to a human." }
+            ]
+        },
+        VERIFY_POSTCODE: {
+            bot: "And finally, to complete your verification, please say the postcode for one of your Alinta Energy accounts.",
+            options: [
+                { label: "[Valid] \"Three thousand\"", next: "CONFIRM_ACCOUNT", text: "Three thousand", action: () => resetSlot("postcode") },
+                { label: "[No-Match] Unrecognised postcode", next: "NOMATCH_POSTCODE", text: "I'm not sure" },
+                { label: "[No-Input / Silence]", next: "NOINPUT_POSTCODE", text: "[silence \u2014 no input detected]" },
+                { label: "\"Speak to a human\"", next: "AGENT_TRANSFER", text: "Speak to a human." }
             ]
         },
         CONFIRM_ACCOUNT: {
@@ -886,30 +1440,48 @@
             ]
         },
         SELECT_METHOD: {
-            bot: "By continuing, you confirm you are authorized to set up direct debit using this payment method. Would you like to use a bank account, or a credit or debit card?",
+            bot: "By continuing, you confirm you are authorised to set up direct debit using this payment method. Would you like to use a bank account, or a credit or debit card?",
             options: [
-                { label: "\"Bank account\"", next: "BANK_BSB", text: "Bank account", action: () => { paymentMethod = "BANK"; retries = 0; } },
-                { label: "\"Credit or debit card\"", next: "CARD_PCI", text: "Credit card", action: () => { paymentMethod = "CARD"; retries = 0; } }
+                { label: "\"Bank account\"", next: "BANK_BSB", text: "Bank account", action: () => { paymentMethod = "BANK"; resetAllSlots(); } },
+                { label: "\"Credit or debit card\"", next: "CARD_PCI", text: "Credit card", action: () => { paymentMethod = "CARD"; resetAllSlots(); } }
             ]
         },
         BANK_BSB: {
             bot: "Please say your six-digit BSB number.",
             options: [
-                { label: "[Valid] \"BSB is 0 6 3 1 2 3\"", next: "BANK_ACC", text: "BSB is 0 6 3 1 2 3", action: () => retries = 0 },
-                { label: "[Invalid / Missing digits]", next: "RETRY_BSB", text: "0 6 3" },
-                { label: "[Timeout]", next: "RETRY_BSB", text: "[Silence]" }
+                { label: "[Valid] \"BSB is 0 6 3 1 2 3\"", next: "BANK_NAME", text: "BSB is 0 6 3 1 2 3", action: () => resetSlot("bsb") },
+                { label: "[No-Match] \"0 6 3\"", next: "NOMATCH_BSB", text: "0 6 3" },
+                { label: "[No-Input / Silence]", next: "NOINPUT_BSB", text: "[silence]" },
+                { label: "\"Speak to a human\"", next: "AGENT_TRANSFER", text: "Speak to a human." }
+            ]
+        },
+        BANK_NAME: {
+            bot: "And what is the full name on the bank account?",
+            options: [
+                { label: "[Valid] \"John Smith\"", next: "BANK_ACC", text: "John Smith", action: () => resetSlot("bankName") },
+                { label: "[No-Match] Unclear name", next: "NOMATCH_BANK_NAME", text: "J Smth" },
+                { label: "[No-Input / Silence]", next: "NOINPUT_BANK_NAME", text: "[silence]" },
+                { label: "\"Speak to a human\"", next: "AGENT_TRANSFER", text: "Speak to a human." }
             ]
         },
         BANK_ACC: {
             bot: "Got it. Now, please read out your bank account number.",
             options: [
-                { label: "[Valid] \"Account number 1 1 2 2 3 3 4 4\"", next: "SUCCESS", text: "Account number 1 1 2 2 3 3 4 4", action: () => retries = 0 },
-                { label: "[Invalid Account Number]", next: "RETRY_BANK_ACC", text: "Account number 0" },
-                { label: "[Timeout]", next: "RETRY_BANK_ACC", text: "[Silence]" }
+                { label: "[Valid] \"Account number 1 1 2 2 3 3 4 4\"", next: "DDR_CONSENT", text: "Account number 1 1 2 2 3 3 4 4", action: () => resetSlot("bankAccount") },
+                { label: "[No-Match] \"Account number 0\"", next: "NOMATCH_BANK_ACC", text: "Account number 0" },
+                { label: "[No-Input / Silence]", next: "NOINPUT_BANK_ACC", text: "[silence]" },
+                { label: "\"Speak to a human\"", next: "AGENT_TRANSFER", text: "Speak to a human." }
+            ]
+        },
+        DDR_CONSENT: {
+            bot: "Before we complete your set-up, I need to read some important terms. You are confirming that you are the holder of the nominated payment method, or authorised by the holder, to set up a direct debit arrangement with Alinta Energy. You authorise Alinta Energy to debit your nominated payment method on each due date for the amount owing on your invoices or payment plan instalments. You understand that the debit amount may vary based on your energy use and any applicable discounts, in accordance with the Direct Debit Service Agreement. You also acknowledge that Alinta Energy will collect and use your personal information to administer your direct debit arrangement, as described in the Privacy Policy at alintaenergy.com.au forward slash privacy. Do you agree to proceed?",
+            options: [
+                { label: "\"Yes, I agree.\"", next: "SUCCESS", text: "Yes, I agree." },
+                { label: "\"No, I don't agree.\"", next: "AGENT_TRANSFER", text: "No, I don't agree." }
             ]
         },
         SUCCESS: {
-            bot: "That's all set up and done. Your next direct debit is due on the 24th of August, 2026. You will receive the terms and conditions via your preferred contact method. Now, do you have anything else you would like to get done?",
+            bot: "Your direct debit request and service agreement are now confirmed. Your next direct debit is due on the 24th of August, 2026. You'll receive the DDR terms and conditions via your preferred contact method. Is there anything else I can help you with?",
             options: [
                 { label: "\"No, that's all, thank you.\"", next: "GOODBYE", text: "No, that's all, thank you." },
                 { label: "\"Yes, I want to check something else.\"", next: "NLU_GREETING", text: "Yes, I want to check something else." }
@@ -928,10 +1500,18 @@
     function executeStep(stepKey) {
         currentState = stepKey;
         updateProgress(stepKey);
+        clearTimeout(bargeInTimer);
         
         if (stepKey === "CARD_PCI") {
             setInterfaceMode("keypad");
-            addBubble("Please use your telephone keypad to type your card number, expiry, and secure code, followed by the hash key.", "bot");
+            cardStepIndex = 0;
+            currentCardStep = cardSteps[0];
+            capturedCard = {};
+            cardRetries = 0;
+            secureBanner.classList.remove("hidden");
+            keypadHint.classList.add("hidden");
+            keypadLabel.innerText = currentCardStep.label;
+            addBubble(currentCardStep.prompt, "bot");
             return;
         }
 
@@ -948,7 +1528,13 @@
             resetBtn.classList.add("primary");
             resetBtn.type = "button";
             resetBtn.innerText = "Restart Simulation Flow";
-            resetBtn.onclick = () => { retries = 0; paymentMethod = ""; chatDisplay.innerHTML = ""; executeStep("START"); };
+            resetBtn.onclick = () => {
+                resetAllSlots(); paymentMethod = ""; currentCardStep = null; capturedCard = {}; cardStepIndex = 0;
+                addScenarioDivider("New scenario");
+                resetNlu();
+                startCallTimer();
+                executeStep("START");
+            };
             optionsContainer.appendChild(resetBtn);
             return;
         }
@@ -962,7 +1548,19 @@
             btn.dataset.kind = getOptionKind(opt);
             btn.innerText = opt.label;
             btn.onclick = () => {
+                if (window.speechSynthesis.speaking) {
+                    window.speechSynthesis.cancel();
+                }
+                if (activeSpeakingBubble) {
+                    const ic = activeSpeakingBubble.querySelector(".speaking-icon");
+                    if (ic) ic.remove();
+                    activeSpeakingBubble = null;
+                }
+                const tip = document.getElementById("bargeTooltip");
+                if (tip) tip.remove();
+                clearTimeout(bargeInTimer);
                 if(opt.action) opt.action();
+                updateNlu(opt.next, opt.label);
                 addBubble(opt.text, "customer");
                 setTimeout(() => {
                     handleCustomTransitions(opt.next);
@@ -970,78 +1568,142 @@
             };
             optionsContainer.appendChild(btn);
         });
+
+        if (!scenarioPlaying) {
+            const allBtns = optionsContainer.querySelectorAll(".btn");
+            allBtns.forEach(b => { b.disabled = true; b.style.opacity = "0.4"; });
+            const tooltip = document.createElement("div");
+            tooltip.className = "barge-tooltip";
+            tooltip.id = "bargeTooltip";
+            tooltip.textContent = "Barge-in: options enable shortly \u2014 click to interrupt the bot";
+            optionsContainer.insertBefore(tooltip, optionsContainer.firstChild);
+            bargeInTimer = setTimeout(() => {
+                allBtns.forEach(b => { b.disabled = false; b.style.opacity = "1"; });
+                tooltip.textContent = "Barge-in active \u2014 click to interrupt";
+            }, 500);
+        }
     }
 
     function handleCustomTransitions(nextStep) {
-        if (nextStep === "RETRY_ACCOUNT") {
-            retries++;
-            if (retries >= 2) {
+        function trySlot(slot, type, msg) {
+            retrySlots[slot][type]++;
+            const t = slotTotal(slot);
+            updateProgress(currentState);
+            nluRetries.textContent = t;
+            const noInputMax = type === "noInput" && retrySlots[slot].noInput >= 2;
+            if (noInputMax || t >= 3) {
                 executeStep("AGENT_TRANSFER");
             } else {
-                addBubble("Sorry, I couldn't find an account matching those details. Let's try that one more time. Please read out your nine-digit account number clearly.", "bot");
+                addBubble(msg, "bot");
             }
-        } else if (nextStep === "RETRY_DOB") {
-            retries++;
-            if (retries >= 2) {
-                executeStep("AGENT_TRANSFER");
-            } else {
-                addBubble("Sorry, that date of birth doesn't look quite right. Please say your date of birth again, including the full four digit year.", "bot");
-            }
-        } else if (nextStep === "RETRY_BSB") {
-            retries++;
-            if (retries >= 2) {
-                executeStep("AGENT_TRANSFER");
-            } else {
-                addBubble("Sorry, a BSB should be exactly six digits long. Please say your six-digit BSB number again.", "bot");
-            }
-        } else if (nextStep === "RETRY_BANK_ACC") {
-            retries++;
-            if (retries >= 2) {
-                executeStep("AGENT_TRANSFER");
-            } else {
-                addBubble("Sorry, that account number doesn't look quite right. Please say your bank account number again.", "bot");
-            }
-        } else {
-            executeStep(nextStep);
+        }
+
+        switch (nextStep) {
+            case "NOMATCH_ACCOUNT":
+                return trySlot("accountNumber", "noMatch", "Sorry, I didn\u2019t recognise that account number. Please say your nine-digit account number again.");
+            case "NOINPUT_ACCOUNT":
+                return trySlot("accountNumber", "noInput", "I didn\u2019t catch that. Please say your nine-digit account number.");
+            case "NOMATCH_DOB":
+                return trySlot("dob", "noMatch", "Sorry, that doesn\u2019t match. Please say the day and month as four digits. For example, for the 24th of January, say two four zero one.");
+            case "NOINPUT_DOB":
+                return trySlot("dob", "noInput", "I didn\u2019t catch that. Please say the day and month of your date of birth as four digits.");
+            case "NOMATCH_POSTCODE":
+                return trySlot("postcode", "noMatch", "Sorry, that postcode doesn\u2019t match. Please say the postcode for one of your Alinta Energy accounts.");
+            case "NOINPUT_POSTCODE":
+                return trySlot("postcode", "noInput", "I didn\u2019t catch that. Please say your postcode.");
+            case "NOMATCH_BSB":
+                return trySlot("bsb", "noMatch", "Sorry, a BSB should be exactly six digits. Please say your six-digit BSB number again.");
+            case "NOINPUT_BSB":
+                return trySlot("bsb", "noInput", "I didn\u2019t catch that. Please say your six-digit BSB number.");
+            case "NOMATCH_BANK_NAME":
+                return trySlot("bankName", "noMatch", "Sorry, I didn\u2019t catch the name. What is the full name on the bank account?");
+            case "NOINPUT_BANK_NAME":
+                return trySlot("bankName", "noInput", "I didn\u2019t catch that. Please say the name on the bank account.");
+            case "NOMATCH_BANK_ACC":
+                return trySlot("bankAccount", "noMatch", "Sorry, that account number doesn\u2019t look right. Please say your bank account number again.");
+            case "NOINPUT_BANK_ACC":
+                return trySlot("bankAccount", "noInput", "I didn\u2019t catch that. Please say your bank account number.");
+            default:
+                executeStep(nextStep);
         }
     }
 
     function pressKey(num) {
-        if (enteredDigits.length < 19) {
+        const maxLen = currentCardStep ? currentCardStep.max : 19;
+        if (enteredDigits.length < maxLen) {
             enteredDigits += num;
-            keypadScreen.innerText = "*".repeat(enteredDigits.length);
+            if (currentState === "CARD_PCI") {
+                pciBeep();
+                keypadScreen.innerText = formatSecureDisplay(enteredDigits, currentCardStep?.key);
+            } else {
+                keypadScreen.innerText = "•".repeat(enteredDigits.length);
+            }
             keypadScreen.setAttribute("aria-label", `${enteredDigits.length} digits entered`);
         }
     }
 
     function submitKeypad() {
-        if (enteredDigits.length > 5) {
-            addBubble("(Card Details Entered via Keypad)", "customer");
-            setInterfaceMode("voice");
-            setTimeout(() => {
-                executeStep("SUCCESS");
-            }, 1000);
-        } else {
+        if (!currentCardStep || !currentCardStep.validator(enteredDigits)) {
             simulateKeypadError();
+            return;
+        }
+
+        capturedCard[currentCardStep.key] = enteredDigits;
+        cardStepIndex++;
+
+        if (cardStepIndex < cardSteps.length) {
+            currentCardStep = cardSteps[cardStepIndex];
+            enteredDigits = "";
+            keypadScreen.innerText = "Ready";
+            keypadScreen.setAttribute("aria-label", "No digits entered");
+            keypadLabel.innerText = currentCardStep.label;
+            cardRetries = 0;
+            addBubble(currentCardStep.prompt, "bot");
+        } else {
+            const last4 = capturedCard.PAN ? capturedCard.PAN.slice(-4) : "****";
+            addBubble(`(Card ending ${last4} captured securely via keypad)`, "customer");
+            setInterfaceMode("voice");
+            secureBanner.classList.add("hidden");
+            keypadHint.classList.remove("hidden");
+            keypadLabel.innerText = "Secure keypad input";
+            currentCardStep = null;
+            setTimeout(() => {
+                executeStep("DDR_CONSENT");
+            }, 1000);
         }
     }
 
     function simulateKeypadError() {
-        retries++;
-        if (retries >= 2) {
+        cardRetries++;
+        if (cardRetries >= 2) {
             setInterfaceMode("voice");
+            secureBanner.classList.add("hidden");
+            keypadHint.classList.remove("hidden");
+            keypadLabel.innerText = "Secure keypad input";
+            currentCardStep = null;
             executeStep("AGENT_TRANSFER");
         } else {
             enteredDigits = "";
             keypadScreen.innerText = "Ready";
             keypadScreen.setAttribute("aria-label", "No digits entered");
-            addBubble("We are experiencing an issue securely processing your card entries. Please enter your card number using your keypad.", "bot");
+            if (currentCardStep) {
+                addBubble(`Sorry, that ${currentCardStep.label.toLowerCase()} doesn't look right. Please try entering it again, followed by hash.`, "bot");
+            } else {
+                addBubble("We are experiencing an issue securely processing your card entries. Please enter your card number using your keypad.", "bot");
+            }
         }
     }
 
     window.onload = () => {
         window.speechSynthesis.getVoices();
+        startCallTimer();
         executeStep("START");
+    };
+
+    window.speechSynthesis.onvoiceschanged = () => {
+        if (!preferredVoiceResolved) {
+            window.speechSynthesis.getVoices();
+        }
     };
 </script>
 
